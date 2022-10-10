@@ -5,6 +5,7 @@ CREATE TABLE milkshakes (
     flavor VARCHAR(255) NOT NULL,
     short_description VARCHAR(255) NOT NULL,
     long_description TEXT NOT NULL,
+    img_url TEXT NOT NULL,
 )
 
 -- create milkshake_reviews table
