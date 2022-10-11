@@ -25,6 +25,20 @@ app.get("/api/", async (req, res) => {
 })
 
 
+//get an individual milkshake form the database
+app.get("/api/milkshake/:id", async (req, res) => {
+    try {
+        const results = await db.query("SELECT * FROM milkshakes WHERE id = $1", [req.params.id])
+
+        res.json({
+            milkshake: results.rows[0]
+        })
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
 //run server
 const port = process.env.PORT || 8000
 app.listen(port, () => console.log(`server has started on port ${port}`))
