@@ -28,10 +28,12 @@ app.get("/api/", async (req, res) => {
 //get an individual milkshake form the database
 app.get("/api/milkshake/:id", async (req, res) => {
     try {
-        const results = await db.query("SELECT * FROM milkshakes WHERE id = $1", [req.params.id])
+        const milkshake = await db.query("SELECT * FROM milkshakes WHERE id = $1", [req.params.id])
+        const reviews = await db.query("SELECT * FROM milkshake_reviews WHERE milkshake_id = $1", [req.params.id])
 
         res.json({
-            milkshake: results.rows[0]
+            milkshake: milkshake.rows[0],
+            reviews: reviews.rows
         })
     } catch (error) {
         console.log(error)
