@@ -11,10 +11,10 @@ app.use(cors())
 app.use(express.json())
 
 
-//get all milkshakes from database
+//get all milkshakes
 app.get("/api/", async (req, res) => {
     try {
-        const results = await db.query("SELECT * FROM milkshakes")
+        const results = await db.query("SELECT * FROM milkshakes LEFT JOIN (SELECT milkshake_id, TRUNC(AVG(reviewer_rating), 1) AS average_rating, COUNT(review_id) AS total_ratings FROM milkshake_reviews GROUP BY milkshake_id) milkshake_reviews ON milkshakes.id = milkshake_reviews.milkshake_id")
         
         res.json({
             milkshakes: results.rows
@@ -24,11 +24,10 @@ app.get("/api/", async (req, res) => {
     }
 })
 
-
-//get an individual milkshake form the database
+//get an individual milkshake
 app.get("/api/milkshake/:id", async (req, res) => {
     try {
-        const milkshake = await db.query("SELECT * FROM milkshakes WHERE id = $1", [req.params.id])
+        const milkshake = await db.query("SELECT * FROM milkshakes LEFT JOIN (SELECT milkshake_id, TRUNC(AVG(reviewer_rating), 1) AS average_rating, COUNT(review_id) AS total_ratings FROM milkshake_reviews GROUP BY milkshake_id) milkshake_reviews ON milkshakes.id = milkshake_reviews.milkshake_id WHERE id = $1", [req.params.id])
         const reviews = await db.query("SELECT * FROM milkshake_reviews WHERE milkshake_id = $1", [req.params.id])
 
         res.json({
@@ -39,6 +38,7 @@ app.get("/api/milkshake/:id", async (req, res) => {
         console.log(error)
     }
 })
+
 
 
 //run server
